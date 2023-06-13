@@ -78,6 +78,10 @@ class LogIterator implements \Iterator {
 	#[\ReturnTypeWillChange]
 	public function current() {
 		$entry = json_decode($this->lastLine, true);
+		// Hide 'deprecated' messages from Logging
+		if (isset($entry['message']) && str_contains($entry['message'], 'deprecated')) {
+			return null;
+		}
 		if ($this->dateFormat !== \DateTime::ATOM) {
 			if (isset($entry['time'])) {
 				$time = \DateTime::createFromFormat($this->dateFormat, $entry['time'], $this->timezone);
